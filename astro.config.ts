@@ -8,7 +8,7 @@ import { SITE } from "./src/config";
 
 // https://astro.build/config
 export default defineConfig({
-  site: SITE.website,
+  site: "https://aravindim.gitlab.io",
   integrations: [
     tailwind({
       applyBaseStyles: false,
@@ -37,6 +37,6 @@ export default defineConfig({
     },
   },
   scopedStyleStrategy: "where",
-  outDir: 'public',
-  publicDir: 'static',
+  outDir: "public",
+  publicDir: "static",
 });
