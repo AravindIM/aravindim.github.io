@@ -14,8 +14,7 @@ tags:
   - Redhat
   - CentOS
   - RHEL
-description:
-  Guide on how to make the Redhat's package manager faster
+description: Guide on how to make the Redhat's package manager faster
 ---
 
 ## Table of contents
@@ -84,6 +83,6 @@ sudo dnf clean all
 
 Then predownload the package headers:
 
-```
+```bash
 sudo dnf makecache
 ```
