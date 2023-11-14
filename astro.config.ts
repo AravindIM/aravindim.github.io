@@ -37,4 +37,6 @@ export default defineConfig({
     },
   },
   scopedStyleStrategy: "where",
+  outDir: 'public',
+  publicDir: 'static',
 });
