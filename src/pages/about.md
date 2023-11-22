@@ -3,34 +3,16 @@ layout: ../layouts/AboutLayout.astro
 title: "About"
 ---
 
-AstroPaper is a minimal, responsive and SEO-friendly Astro blog theme. I designed and crafted this based on [my personal blog](https://satnaing.dev/blog).
-
-This theme is aimed to be accessible out of the box. Light and dark mode are supported by
-default and additional color schemes can also be configured.
-
-This theme is self-documented \_ which means articles/posts in this theme can also be considered as documentations. So, see the documentation for more info.
-
 <div>
-  <img src="/assets/dev.svg" class="sm:w-1/2 mx-auto" alt="coding dev illustration">
+  <img src="https://www.libravatar.org/avatar/e7a55518e9b354207a95960523e009bc?s=500" class="sm:w-1/3 mx-auto" alt="profile picture">
 </div>
 
-## Tech Stack
+My name is Aravind I M. I'm a software developer from India. I work on projects in Rust, Golang, Python and Typescript. I'm also a GNU+Linux user and active supporter of Free Software Movement. I use Debian GNU+Linux and contribute packages to it. Most of my projects are Free Software Projects and you can find them on my [Gitlab](https://gitlab.com/AravindIM) profile.
 
-This theme is written in vanilla JavaScript (+ TypeScript for type checking) and a little bit of ReactJS for some interactions. TailwindCSS is used for styling; and Markdown is used for blog contents.
+## Most Recent Projects
 
-## Features
+- [Channeler App for Image Boards](https://gitlab.com/AravindIM/Channeler)
+- [Goli - The Lisp Parser written in Golang](https://gitlab.com/AravindIM/goli)
 
-Here are certain features of this site.
-
-- fully responsive and accessible
-- SEO-friendly
-- light & dark mode
-- fuzzy search
-- super fast performance
-- draft posts
-- pagination
-- sitemap & rss feed
-- highly customizable
-
-If you like this theme, you can star/contribute to the [repo](https://github.com/satnaing/astro-paper).  
-Or you can even give any feedback via my [email](mailto:contact@satnaing.dev).
+This website is free software and its source code is available in the [repo](https://gitlab.com/AravindIM/aravindim.gitlab.io).  
+Or you can even give any feedback via my [email](mailto:aravindim@yahoo.com) or reach out to me on my [mastodon](https://mastodon.social/@aravindim) account.
