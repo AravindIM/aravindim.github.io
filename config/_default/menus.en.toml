@@ -1,0 +1,41 @@
+[[main]]
+none = "none"
+
+[[main]]
+name = "Blogs"
+pageRef = "blogs"
+identifier = "4m9WPAtldq"
+weight = 1
+
+[[main]]
+name = "Projects"
+pageRef = "projects"
+identifier = "G1tMaG5T4Y"
+weight = 2
+
+[[main]]
+pre = "x-twitter"
+url = "https://x.com/aravind_i_m"
+identifier = "ORY4rjPAww"
+weight = 3
+
+[[main]]
+pre = "linkedin"
+url = "https://linkedin.com/in/aravindim"
+identifier = "VeNFzIHpQY"
+weight = 4
+
+[[main]]
+pre = "github"
+url = "https://github.com/AravindIM"
+identifier = "ME932KGIvO"
+weight = 5
+
+[[main]]
+pre = "gitlab"
+url = "https://gitlab.com/AravindIM"
+identifier = "wBhR7aN0r5"
+weight = 6
+
+[[footer]]
+none = "none"
