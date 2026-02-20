@@ -35,9 +35,15 @@ headline = "Developer & Writer"
 image = "https://www.gravatar.com/avatar/e7a55518e9b354207a95960523e009bc?s=2048"  # Use full URL when you have a profile image
 imagequality = "96"
 [[Author.links]]
-  github = "https://github.com/aravindim"
+  x-twitter = "https://x.com/aravind_i_m"
 [[Author.links]]
   linkedin = "https://linkedin.com/in/aravindim"
+[[Author.links]]
+  github = "https://github.com/aravindim"
+[[Author.links]]
+  gitlab = "https://gitlab.com/AravindIM"
+[[Author.links]]
+  mastodon = "https://mastodon.social/@aravindim"
 
 [header]
 layout = "fixed"
