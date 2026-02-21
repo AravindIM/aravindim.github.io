@@ -13,29 +13,40 @@ pageRef = "projects"
 identifier = "G1tMaG5T4Y"
 weight = 2
 
-[[main]]
-pre = "x-twitter"
-url = "https://x.com/aravind_i_m"
-identifier = "ORY4rjPAww"
-weight = 3
-
-[[main]]
-pre = "linkedin"
-url = "https://linkedin.com/in/aravindim"
-identifier = "VeNFzIHpQY"
-weight = 4
-
-[[main]]
-pre = "github"
-url = "https://github.com/AravindIM"
-identifier = "ME932KGIvO"
-weight = 5
-
-[[main]]
-pre = "gitlab"
-url = "https://gitlab.com/AravindIM"
-identifier = "wBhR7aN0r5"
-weight = 6
-
 [[footer]]
 none = "none"
+
+[[footer]]
+pre = "x-twitter"
+name = "@aravind_i_m"
+url = "https://x.com/aravind_i_m"
+identifier = "ORY4rjPAww"
+weight = 1
+
+[[footer]]
+pre = "mastodon"
+name = "@aravindim@infosec.exchange"
+url = "https://infosec.exchange/@aravindim"
+identifier = "eJdcKkzFSU"
+weight = 2
+
+[[footer]]
+pre = "linkedin"
+name = "aravindim"
+url = "https://linkedin.com/in/aravindim"
+identifier = "VeNFzIHpQY"
+weight = 3
+
+[[footer]]
+pre = "github"
+name = "AravindIM"
+url = "https://github.com/AravindIM"
+identifier = "ME932KGIvO"
+weight = 4
+
+[[footer]]
+pre = "gitlab"
+name = "AravindIM"
+url = "https://gitlab.com/AravindIM"
+identifier = "wBhR7aN0r5"
+weight = 5
