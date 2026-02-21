@@ -32,18 +32,23 @@ smartTOCHideUnfocusedChildren = false
 [Author]
 name = "Aravind I M"
 headline = "Developer & Writer"
-image = "https://www.gravatar.com/avatar/e7a55518e9b354207a95960523e009bc?s=2048"  # Use full URL when you have a profile image
+image = "https://www.gravatar.com/avatar/e7a55518e9b354207a95960523e009bc?s=2048"
 imagequality = "96"
+
 [[Author.links]]
-  x-twitter = "https://x.com/aravind_i_m"
+x-twitter = "https://x.com/aravind_i_m"
+
 [[Author.links]]
-  linkedin = "https://linkedin.com/in/aravindim"
+mastodon = "https://infosec.exchange/@aravindim"
+
 [[Author.links]]
-  github = "https://github.com/aravindim"
+linkedin = "https://linkedin.com/in/aravindim"
+
 [[Author.links]]
-  gitlab = "https://gitlab.com/AravindIM"
+github = "https://github.com/aravindim"
+
 [[Author.links]]
-  mastodon = "https://mastodon.social/@aravindim"
+gitlab = "https://gitlab.com/AravindIM"
 
 [header]
 layout = "fixed"
@@ -51,7 +56,7 @@ layout = "fixed"
 [footer]
 showMenu = true
 showCopyright = true
-showThemeAttribution = true
+showThemeAttribution = false
 showAppearanceSwitcher = true
 showScrollToTop = true
 
