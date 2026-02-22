@@ -1,6 +1,6 @@
 ---
 author: Aravind I M
-pubDatetime: 2022-11-03T19:00:00Z
+date: 2022-11-03
 title: How to make dnf faster in Fedora
 postSlug: how-to-make-dnf-faster
 featured: true

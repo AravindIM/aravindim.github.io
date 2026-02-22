@@ -1,6 +1,6 @@
 ---
 author: Aravind I M
-pubDatetime: 2022-11-03T19:00:00Z
+date: 2022-11-03
 title: How to setup NodeJS for global package installation in Guix
 postSlug: how-to-setup-nodejs-in-guix
 featured: true
