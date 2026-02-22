@@ -1,6 +1,6 @@
 ---
 author: Aravind I M
-pubDatetime: 2023-08-11T19:09:11Z
+date: 2023-08-11
 title: How to install Arch Linux the secure way
 postSlug: how-to-install-arch-linux-uefi-luks-lvm-btrfs-systemdboot-uki-secure-boot
 featured: true
