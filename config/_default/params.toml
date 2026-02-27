@@ -35,6 +35,7 @@ name = "Aravind I M"
 headline = "Developer & Writer"
 image = "https://www.gravatar.com/avatar/e7a55518e9b354207a95960523e009bc?s=2048&t=1"
 imagequality = "96"
+email = "aravindim@yahoo.com"
 
 [[Author.links]]
 x-twitter = "https://x.com/aravind_i_m"
