@@ -2,7 +2,7 @@
 author: Aravind I M
 date: 2023-08-11
 title: How to install Arch Linux the secure way (Systemd Boot Method)
-postSlug: how-to-install-arch-linux-uefi-luks-lvm-btrfs-systemdboot-uki-secure-boot
+postSlug: install-arch-linux-the-secure-way-systemd-boot
 featured: true
 draft: false
 tags:
@@ -18,7 +18,7 @@ tags:
   - unified-kernel-image
 categories:
   - system-administration
-summary: Guide on how to install Arch Linux with UEFI + LUKS + LVM +  BTRFS + Unified Kernel Image + System D Boot + Secure Boot
+summary: A comprehensive, step-by-step tutorial to install Arch Linux the secure way using UEFI, LUKS full-disk encryption, LVM, Btrfs, SystemD Boot, and Secure Boot. 
 ---
 
 # Installation Steps
