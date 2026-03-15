@@ -1,7 +1,7 @@
 ---
 author: Aravind I M
 date: 2023-08-11
-title: How to install Arch Linux the secure way
+title: How to install Arch Linux the secure way (Systemd Boot Method)
 postSlug: how-to-install-arch-linux-uefi-luks-lvm-btrfs-systemdboot-uki-secure-boot
 featured: true
 draft: false
@@ -9,10 +9,13 @@ tags:
   - tutorial
   - arch-linux
   - installation
-  - encryption
-  - filesystem
-  - security
-  - boot-loader
+  - uefi
+  - luks
+  - secure-boot
+  - lvm
+  - btrfs
+  - systemd-boot
+  - unified-kernel-image
 categories:
   - system-administration
 summary: Guide on how to install Arch Linux with UEFI + LUKS + LVM +  BTRFS + Unified Kernel Image + System D Boot + Secure Boot
@@ -452,8 +455,14 @@ Enable Bluetooth:
 
 ## 20. Install Aur helper
 
+Install the dependencies for yay
 ```console
 # pacman -Syy go
+```
+
+Switch to a normal user USERNAME and install yay
+```
+# su - USERNAME
 $ git clone https://aur.archlinux.org/yay.git
 $ cd yay
 $ makepkg -is
