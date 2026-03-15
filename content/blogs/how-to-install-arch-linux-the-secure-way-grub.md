@@ -2,7 +2,7 @@
 author: Aravind I M
 date: 2023-07-08
 title: How to install Arch Linux the secure way (GRUB Method)
-postSlug: how-to-install-arch-linux-uefi-luks-lvm-btrfs-systemdboot-uki-secure-boot
+postSlug: install-arch-linux-the-secure-way-grub
 featured: true
 draft: false
 tags:
@@ -17,14 +17,16 @@ tags:
   - grub
 categories:
   - system-administration
-summary: Guide on how to install Arch Linux with UEFI + LUKS + LVM +  BTRFS + GRUB + Secure Boot
+summary: A comprehensive, step-by-step tutorial to install Arch Linux the secure way using UEFI, LUKS full-disk encryption, LVM, Btrfs, GRUB, and Secure Boot.
 ---
 
-# Installation Steps
+If you are looking to **install Arch Linux the secure way**, you have come to the right place. This step-by-step tutorial walks you through a robust, hardened setup featuring UEFI, LUKS full-disk encryption, LVM, Btrfs, GRUB, and Secure Boot. 
 
-## 1. Connect to Wifi
+Why this combination? LUKS ensures your data remains completely inaccessible to thieves, LVM gives you flexible partition management, Btrfs allows for easy system snapshots, and Secure Boot ensures only trusted code runs during startup.
 
-Source: [iwctl](https://wiki.archlinux.org/title/Iwd#iwctl)
+## Step 1: Connect to a Wi-Fi Network
+
+Arch Linux requires an active internet connection to download base packages. We will use `iwctl` to connect.
 
 ```console
 # iwctl
@@ -36,40 +38,41 @@ Source: [iwctl](https://wiki.archlinux.org/title/Iwd#iwctl)
 [iwd]# exit
 ```
 
-### (i) Check internet
+Ensure you are successfully connected by pinging the Arch Linux servers:
 
 ```console
 $ ping archlinux.org
 ```
 
-## 2. Check system time
+## Step 2: Check System Time
+
+Ensure your system clock is accurate to prevent cryptographic and network errors during package installation.
 
 ```console
 $ timedatectl
 ```
 
-## 3. Partition disks
+## Step 3: Partition Disks
 
-### Check disk
+Create Partitions using fdisk
 
+1. Check available disks:
 ```console
 # fdisk -l
 ```
 
-### (ii) Create partitions disk
-
-1. Enter fdisk
+2. Enter fdisk:
 ```console
 # fdisk /dev/sdX
 ```
 
-2. Create GPT label
+3. Create a new GPT disk label:
 ```console
 Command (m for help): g
 Created a new GPT disklabel (GUID: ...).
 ```
  
-2. Create boot partition
+4. Create the EFI boot partition (512M):
 ```console
 Command (m for help): n
 Partition number: 
@@ -80,7 +83,7 @@ Command (m for help): t
 Partition type or alias (type L to list all): uefi
 ```
 
-3. Make remaining partition for LUKS
+5. Make the remaining space a partition for LUKS:
 ```console
 Command (m for help): n
 Partition number: 
@@ -88,30 +91,28 @@ First sector:
 Last sector, +/-sectors or +/-size{K,M,G,T,P}: 
 ```
 
-4. Print partition info to verify
+6. Print partition info to verify
 ```console
 Command (m for help): p
 ```
 
-5. Write changes (write changes and quit)
+7. Write changes to the disk and quit:
 ```console
 Command (m for help): w
 ```
+(Tip: Type q to quit without writing changes in case of mistakes).
 
-6. Quit fdisk (quit without writing changes in case of mistakes)
-```console
-Command (m for help): q
-```
-
-### (iii) Format Boot disk
+## Step 4: Format Boot disk
 
 ```console
 # mkfs.fat -F 32 -n EFI /dev/sdXY
 ```
 
-## 3. Setup LUKS
+## Step 5: Setup LUKS Disk Encryption
 
-### (i) Create LUKS partition
+We will use LUKS1 to encrypt the root partition, securing your data at rest.
+
+### Create LUKS partition
 
 ```console
 # cryptsetup --use-random --type luks1 luksFormat /dev/sdXZ
@@ -120,62 +121,62 @@ Enter passphrase:
 Verify passphrase:
 ```
 
-### (ii) Open LUKS partition
+### Open LUKS partition
 
-You can use any other name instead of cryptroot but be sure to replace it everywhere in the following commands
+You can use any name instead of cryptroot, but be sure to replace it everywhere in the following commands.
 ```console
 # cryptsetup open /dev/sdXZ cryptroot
 ```
 
 #### Note
 
-Once you created LVM, you only need to open the disk with cryptsetup
-No additional command needed to access volume group (vg) all the existing LVM partitions are accessible right after unlocking the luks partition.
-This might come in handy if you wish to had to reboot the system after LVM setup
+Once you create LVM, you only need to open the disk with cryptsetup. No additional command is needed to access the volume group (vg)—all existing LVM partitions are accessible right after unlocking the LUKS partition. This is handy if you have to reboot after the LVM setup
 
-## 4. Setup LVM
+## Step 6: Setup LVM (Logical Volume Manager)
 
-### (i) Create LVM group
+LVM allows for flexible resizing of partitions. This step assumes you don't need a separate home partition on LVM.
+
+### Create LVM group
 
 ```console
 # pvcreate /dev/mapper/cryptroot
 # vgcreate vgroot /dev/mapper/cryptroot
 ```
 
-### (ii) Create LVM Partitions
+### Create LVM Partitions
 
-This assumes you don't need separate home partition on LVM
-
-Create swap
+Create an 8GB swap partition:
 ```console
 # lvcreate --size 8G vgroot --name swap
 ```
 
-Create root
+Allocate the rest of the space to the root partition:
 ```console
 # lvcreate -l +100%FREE vgroot --name root
 ```
 
-## (iii) Format LVM partitions
+## Format LVM partitions
 
-Format swap
+Format the swap volume:
 ```console
 # mkswap /dev/vgroot/swap -L swap
 ```
 
-Format root
+Format the root volume as Btrfs:
 ```console
 # mkfs.btrfs /dev/vgroot/root -L root
 ```
 
-## 5. Create Btrfs Subvolumes
+## Step 7: Create Btrfs Subvolumes
 
-Mount btrfs partition to /mnt (install target root)
+Btrfs subvolumes allow you to isolate system data from user data and create easy system snapshots.
+
+Mount the Btrfs partition to /mnt (the install target root):
 ```console
 # mount -t btrfs LABEL=root /mnt
 ```
 
-Create partitions one by one
+Create the required subvolumes one by one:
 ```console
 # btrfs subvolume create /mnt/@
 # btrfs subvolume create /mnt/@home
@@ -184,30 +185,29 @@ Create partitions one by one
 # btrfs subvolume create /mnt/@snapshots
 ```
 
-Disable Copy-on-Write for tmp and varlog
+Disable Copy-on-Write for tmp and varlog to improve performance for highly volatile files:
 ```console
 # chattr +C /mnt/@tmp
 # chattr +C /mnt/@varlog
 ```
 
-Unmount /mnt (install target root)
+Unmount /mnt:
 ```console
 # umount -R /mnt
 ```
 
-## 6. Mount Partitions
+## Step 8: Mount Partitions
 
-### (i) Btrfs Subvolumes
+### Mount Btrfs Subvolumes
 
-The followings options can be set for mounting
-- commit = time interval between data-writes in seconds
-- x-mount.mkdir = make directory if not existing when mounting
-- ssd = ssd based btrfs optimisations
-- noatime = do not store access time for files (makes btrfs faster)
-- nodiratime = do not store directory access time for files (makes btrfs faster)
-- discard = set as async, asynchronous queued TRIM for discard freed file blocks, check below
+We will mount the volumes with specific optimizations. Here is what the options mean:
+- `commit` = time interval between data-writes in seconds
+- `x-mount.mkdir` = make directory if not existing when mounting
+- `ssd` = ssd based btrfs optimisations
+- `noatime` & `nodiratime` = do not store access time for files/directories (makes btrfs faster)
+- `discard` = asynchronous queued TRIM to discard freed file blocks
 
-check if discard is supported by checking if the output is greater than 0:
+First, check if discard is supported by checking if the output is greater than 0:
 ```console
 # cat /sys/block/sdX/queue/discard_max_bytes
 ```
@@ -221,137 +221,145 @@ Mount btrfs subvolumes one by one:
 # mount -t btrfs -o defaults,x-mount.mkdir,compress=zstd,ssd,noatime,nodiratime,discard=async,space_cache=v2,commit=120,subvol=@snapshots LABEL=root /mnt/.snapshots
 ```
 
-### (ii) Mount EFI dir
+### Mount the EFI Directory
 
 ```console
 # mkdir -p /mnt/boot/efi
 # mount LABEL=EFI /mnt/boot/efi
 ```
 
-## 7. Setup Mirrorlist using Reflector
+## Step 9: Setup Mirrorlist Using Reflector
 
-Install reflector:
+To ensure maximum download speeds, configure your mirrorlist. Install reflector:
 ```console
 # pacman -Syy reflector
 ```
 
-Configure mirrorlist using reflector:
+Configure the mirrorlist using reflector:
 ```console
 # reflector --verbose --sort rate --save /etc/pacman.d/mirrorlist
 ```
 
-## 8. Pacstrap Base Packages
+## Step 10: Install Base Packages (Pacstrap)
 
+Install the foundational Linux packages into the mounted root directory.
 ```console
 # pacstrap -K /mnt base linux linux-firmware vim nano
 ```
 
-## 9. Generate Mount Info Fstab
+## Step 11: Generate Mount Info Fstab
 
+Generate the fstab file so the system knows how to mount your partitions on boot.
 ```console
 # genfstab -L -p /mnt >> /mnt/etc/fstab
 ```
 
-## 10. Chroot into Installed Environment
+## Step 12: Chroot into Installed Environment
 
+Shift into your newly installed system to configure it.
 ```console
 # arch-chroot /mnt
 ```
 
-## 11. Set Timezone
+## Step 13: Set Timezone
 
+Link your local time zone and sync the hardware clock.
 ```console
 # ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
 hwclock --systohc
 ```
 
-## 12. Set Locale
+## Step 14: Set Locale
 
-Edit /etc/locale.gen and uncomment the required locales then run:
+Edit `/etc/locale.gen` and uncomment your required locales, then generate them:
 
 ```console
 # locale-gen
 ```
 
-Create /etc/locale.conf with content:
+Create `/etc/locale.conf` with content:
 ```console
 LANG=en_US.UTF-8
 ```
 
-## 13. Configure Hostname
+## Step 15: Configure Hostname
 
+Set the name of your computer.
 ```console
 # echo yourhostname >> /etc/hostname
 ```
 
-## 14. Install additional packages
+## Step 16: Install Additional Packages
 
-Install required programs like shell, development packages, sudo, btfs, secure boot, ucode, bluetooth, wifi, desktop environment, etc
+Install required programs like the shell, development packages, sudo, Btrfs tools, Secure Boot manager, microcode, Bluetooth, Wi-Fi, and your desktop environment (GNOME).
 ```console
 # pacman -Syu base-devel btrfs-progs gptfdisk zsh sudo ttf-dejavu noto-fonts noto-fonts-cjk intel-ucode polkit wpa_supplicant mesa lvm2 efibootmgr bash-completion git man pipewire wireplumber pipewire-alsa pipewire-pulse terminus-font gnome
 ```
 
-If installing gnome select pipewire-jack, wireplumber, noto-fonts-emoji in the proceeding interactive questions
+(If installing GNOME, select `pipewire-jack`, `wireplumber`, and `noto-fonts-emoji` in the proceeding interactive questions).
 
-## 15. Enable services
+## Step 17: Enable Services
 
-Enable Gnome Display Manager
+Enable essential background services to start automatically on boot.
+
+Enable Gnome Display Manager:
 ```console
 # systemctl enable gdm
 ```
 
-Enable Network Manager
+Enable Network Manager:
 ```console
 # systemctl enable NetworkManager
 ```
 
-Enable Bluetooth
+Enable Bluetooth:
 ```console
 # systemctl enable bluetooth
 ```
 
-## 16. User Management
+## Step 18: User Management
 
-Create root password
+Running as the root user is dangerous. Set a root password and create a standard user with `sudo` privileges.
+
+Create the root password:
 ```console
 # passwd
 ```
 
-create user USERNAME:
+Create your standard user (USERNAME):
 ```console
 # useradd -m -G wheel,storage,power -g users -s /bin/bash USERNAME
 ```
 
-create password for user USERNAME:
+Create a password for your new user:
 ```console
 # passwd USERNAME
 ```
 
-Don't forget to uncomment wheel line with visudo:
+Allow the wheel group to execute `sudo` commands by editing the visudo file:
 ```console
 # visudo
 ```
 
-Search for the following line and remove the # infront of it:
+Search for the following line and remove the `#` in front of it:
 ```console
 %wheel ALL=(ALL:ALL) ALL
 ```
 
-Switch user to USERNAME
+Switch to your newly created user:
 ```console
 $ sudo -u USERNAME -i
 ```
 
-## 17. Install Aur helper
+## Step 19: Install an AUR Helper (Yay)
 
-Install the dependencies for yay
+Install yay to easily download user-created packages from the Arch User Repository. First, install Go:
 ```console
-# pacman -Syy go
+$ sudo pacman -Syy go
 ```
 
-Switch to a normal user USERNAME and install yay
+Build and install yay:
 ```
-# su - USERNAME
 $ git clone https://aur.archlinux.org/yay.git
 $ cd yay
 $ makepkg -is
@@ -359,47 +367,45 @@ $ cd ..
 $ rm -rf yay
 ```
 
-## 16. Configure mkinitcpio Hooks
+## Step 20: Configure mkinitcpio Hooks
 
-Edit /etc/mkinitcpio.conf:
+You must configure `mkinitcpio` so the kernel knows how to handle encryption and LVM during boot. Edit `/etc/mkinitcpio.conf`:
 ```console
 HOOKS=(base udev plymouth modconf kms keyboard keymap block encrypt lvm2 btrfs filesystems fsck)
 ```
 
-## 17. Install missing firmware
+## Step 18: Install Missing Firmware
 
-After installing yay, if you're logged in as root, switch to normal user USERNAME and install mkinitcpio-firmware
+Install mkinitcpio-firmware using yay:
 ```console
-# su - USERNAME
 $ yay -Syy mkinitcpio-firmware
 ```
 
-## 18. Grub Setup
+## Step 19: GRUB Bootloader Setup
 
-(Skip to Unified Kernel Image Setup if you want to use systemd-boot instead)
-
-### (i) Install grub
+### Install GRUB
 
 ```console
-# pacman -Syy grub efibootmgr
+$ sudo pacman -Syy grub efibootmgr
 ```
 
-### (ii) Setup Disk Encryption for Grub
+### Setup Disk Encryption for GRUB
 
-Append/uncomment the following line in /etc/default/grub:
+Append/uncomment the following line in `/etc/default/grub`:
 ```console
 GRUB_ENABLE_CRYPTODISK=y
 ```
 
-### (iii) Add Command Line Parameters
-In /etc/default/grub edit the following argument:
+### Add Command Line Parameters
+
+In `/etc/default/grub`, edit the default arguments:
 ```console
 GRUB_CMDLINE_LINUX_DEFAULT="quiet splash sysrq_always_enabled=1 fbcon=nodefer cryptdevice=UUID=disk-UUID:cryptroot root=LABEL=root rootflags=subvol=@ rw loglevel=3"
 ```
 
-### (iii) Create List of modules for Grub
+### Create a List of Modules for GRUB
 
-I have excluded apple filesystem and raid, check the ubuntu grub secure boot script in the reference:
+Create a list of modules for GRUB. (Note: Apple filesystem and RAID are excluded here. Check the Ubuntu GRUB Secure Boot script in the references for more details).
 
 ```console
 GRUB_MODULES="
@@ -466,118 +472,112 @@ GRUB_MODULES="
 	"
 ```
 
-### (iv) Install grub on ESP (EFI System Partition)
+### Install GRUB on ESP (EFI System Partition)
 
 ```console
-# grub-install --target=x86_64-efi --efi-directory=/boot/efi --modules=${GRUB_MODULES} --disable-shim-lock
+$ sudo  grub-install --target=x86_64-efi --efi-directory=/boot/efi --modules=${GRUB_MODULES} --disable-shim-lock
 ```
 
-### (v) Generate Config
+### Generate GRUB Config
 
 ```console
-# grub-mkconfig -o /boot/grub/grub.cfg
+$ sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-## 19. Avoiding having to enter the passphrase twice
+## Step 20: Avoiding Double Passphrase Entry
 
-Create keyfile and add it:
+Since GRUB prompts for your LUKS password to load the kernel, you can configure a keyfile to prevent having to type it a second time as the system boots.
+
+Create the keyfile and add it to LUKS:
 ```console
-# dd bs=512 count=4 if=/dev/random of=/root/cryptlvm.keyfile iflag=fullblock
-# chmod 000 /root/cryptlvm.keyfile
-# cryptsetup -v luksAddKey /dev/sda3 /root/cryptlvm.keyfile
+$ sudo dd bs=512 count=4 if=/dev/random of=/root/cryptlvm.keyfile iflag=fullblock
+$ sudo chmod 000 /root/cryptlvm.keyfile
+$ sudo cryptsetup -v luksAddKey /dev/sda3 /root/cryptlvm.keyfile
 ```
 
-Edit /etc/mkinitcpio.conf:
+Edit `/etc/mkinitcpio.conf` to include the keyfile:
 ```console
 FILES=(/root/cryptlvm.keyfile)
 ```
 
-Generate initramfs:
+Generate initramfs and secure the embedded keyfile:
 ```console
-# mkinitcpio -P
+$ sudo mkinitcpio -P
+$ sudo chmod 600 /boot/initramfs-linux*
 ```
 
-Secure embedded keyfile:
-```console
-# chmod 600 /boot/initramfs-linux*
-```
-
-Edit /etc/default/grub and add cryptkey=rootfs:/root/cryptlvm.keyfile in kernel params:
+Edit /etc/default/grub and add the cryptkey parameter:
 ```console
 GRUB_CMDLINE_LINUX_DEFAULT="...cryptkey=rootfs:/root/cryptlvm.keyfile..."
 ```
 
-Regenerate grub config:
+Regenerate the GRUB config:
 ```console
-# grub-mkconfig -o /boot/grub/grub.cfg
+$ sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
-## 20. Secure boot setup
+## Step 21: Secure boot setup
 
-### (i) Install Secure Boot
-
-```console
-# pacman -Syyu sbctl
-```
-
-### (ii) Create Secure boot keys
+### Install Secure Boot Manager (sbctl)
 
 ```console
-# sbctl create-keys
+$ sudo pacman -Syyu sbctl
 ```
 
-### (iii) Enroll keys
+### Create and Enroll Secure Boot Keys
 
-Change attributes of keys in btrfs:
+Create the keys:
 ```console
-# chattr -i /sys/firmware/efi/efivars/{PK,KEK,db}*
+$ sudo sbctl create-keys
 ```
-In the above command, if either of PK,KEK or db causes command to fail remove that from the list and run with the rest.
 
-Now, Enroll keys along with Microsoft keys (-m):
+Change attributes of keys in Btrfs:
 ```console
-# sbctl enroll-keys -m
+$ sudo chattr -i /sys/firmware/efi/efivars/{PK,KEK,db}*
 ```
+(If either PK, KEK, or db causes the command to fail, remove that specific one from the list and run with the rest).
 
-### (iv) Sign Bootloader for Secureboot
-
+Enroll the keys alongside Microsoft's keys:
 ```console
-# sbctl sign -s -o /boot/efi/EFI/arch/grubx64.efi /boot/efi/EFI/arch/grubx64.efi
-# sbctl sign -s -o /boot/vmlinuz-linux /boot/vmlinuz-linux
+$ sudo sbctl enroll-keys -m
 ```
 
-## 21. Plymouth Setup
+### Sign the Bootloader
 
-### (i) Install plymouth
+Sign GRUB and the Linux kernel to satisfy Secure Boot:
 ```console
-# pacman -Syy plymouth
+$ sudo sbctl sign -s -o /boot/efi/EFI/arch/grubx64.efi /boot/efi/EFI/arch/grubx64.efi
+$ sudo sbctl sign -s -o /boot/vmlinuz-linux /boot/vmlinuz-linux
 ```
 
-### (ii) Install plymouth theme
+## Step 22: Plymouth Setup
 
+Plymouth provides an elegant, flicker-free graphical boot splash screen.
+
+Install Plymouth:
+```console
+$ sudo pacman -Syy plymouth
+```
+
+Install the theme via Yay:
 ```console
 $ yay -Syy plymouth-theme-bgrt-better-luks 
 ```
 
-### (iii) Set Plymouth theme
-Show installed plymouth themes:
+View and set the Plymouth theme:
 ```console
-# plymouth-set-default-theme -l
+$ sudo plymouth-set-default-theme -l
+$ sudo plymouth-set-default-theme -R bgrt-better-luks
 ```
 
-Set plymouth theme:
+Re-run mkinitcpio to apply changes:
 ```console
-# plymouth-set-default-theme -R bgrt-better-luks
+$ sudo mkinitcpio -P
 ```
 
-### (iv) Run mkinitcpio
-```console
-# mkinitcpio -P
-```
+## Step 23: Finish Install
 
-## 23. Finish Install
-
-Logout of user USERNAME, exit arch-chroot, unmount and reboot:
+Log out of your user account, exit the chroot environment, unmount your drives, and reboot into your new, highly secure system!
 ```console
 $ exit
 # exit
@@ -585,7 +585,18 @@ $ exit
 # reboot
 ```
 
-Turn on secure boot in BIOS after this. Nothing else needed for Secure Boot.
+*Final Step:* Don't forget to physically turn on Secure Boot in your motherboard's BIOS after rebooting. Nothing else is needed.
+
+## Frequently Asked Questions (FAQ)
+
+### 1. Why use GRUB instead of systemd-boot for Arch Linux?
+While systemd-boot is simpler, GRUB provides more advanced features for complex partition layouts. In this tutorial, GRUB handles the decryption of the LUKS partition before passing control to the OS, which is highly preferred by some security advocates. If you prefer systemd-boot, check out my alternative guide!
+
+### 2. Why should I use Btrfs with LUKS?
+LUKS provides the heavy-duty security (encryption at rest), while Btrfs provides modern file system features. Btrfs allows you to take instant snapshots of your system. If an update breaks your Arch Linux install, you can simply roll back to a snapshot from the previous day without losing your encrypted setup.
+
+### 3. Is an 8GB swap partition enough?
+Yes, 8GB is generally sufficient for modern systems with 16GB of RAM or more. However, if you plan to use hibernation on a system with 32GB of RAM, you will need a swap partition at least as large as your total RAM.
 
 ## 24. Reference
 
